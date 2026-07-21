@@ -1,0 +1,33 @@
+{
+    "configurations": [
+        {
+            "name": "Linux Kernel Development",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/lib/modules/$7.0.0-28-generic/build/include",
+                "/lib/modules/7.0.0-28-generic/build/arch/x86/include",
+                "/lib/modules/7.0.0-28-generic/build/arch/x86/include/generated",
+                "/lib/modules/7.0.0-28-generic/build/include/uapi",
+                "/lib/modules/7.0.0-28-generic/build/include/generated/uapi",
+                "/usr/include"
+            ],
+            "defines": [
+                "__KERNEL__",
+                "MODULE",
+                "LINUX",
+                "KBUILD_MODNAME=\"hello_lkm\""
+            ],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu11",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "linux-gcc-x64",
+            "browse": {
+                "path": [
+                    "/lib/modules/7.0.0-28-generic/build/include"
+                ],
+                "limitSymbolsToIncludedHeaders": false
+            }
+        }
+    ],
+    "version": 4
+}

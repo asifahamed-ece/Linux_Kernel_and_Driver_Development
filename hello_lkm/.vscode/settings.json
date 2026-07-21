@@ -1,0 +1,6 @@
+{
+    "C_C++.errorLogging": "Verbose",
+    "files.associations": {
+        "*.h": "c"
+    }
+}

@@ -1,0 +1,22 @@
+ [200~# Kernel Module build artifacts
+*.o
+*.ko
+*.ko.unsigned
+*.mod
+*.mod.c
+*.cmd
+*.order
+*.symvers
+*.dwo
+*.dwp
+
+# Directories
+.tmp_versions/
+modules.builtin
+modules.builtin.modinfo
+Module.symvers
+
+# Editor/OS files
+*.swp
+*~
+.vscode/~

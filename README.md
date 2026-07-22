@@ -23,13 +23,13 @@ Building disciplined, modular, and well-documented kernel code. Every module her
 A Loadable Kernel Module is a compiled object file (.ko) that can be dynamically inserted into a running kernel without rebooting. It extends kernel functionality on demand.
 
 ## Key building blocks:
-module_init() — Registers the entry point called when the module is loaded via insmod.
-module_exit() — Registers the cleanup function called on rmmod.
-init / exit — Macros that tell the kernel to free initialization memory after load, and discard exit code if the module is built-in.
-printk() — The kernel's logging function. Unlike printf, it writes to the kernel ring buffer (readable via dmesg) and supports log levels like KERNINFO, KERNERR, KERN_DEBUG.
+module_init() — Registers the entry point called when the module is loaded via insmod.		
+module_exit() — Registers the cleanup function called on rmmod.	
+init / exit — Macros that tell the kernel to free initialization memory after load, and discard exit code if the module is built-in.	
+printk() — The kernel's logging function. Unlike printf, it writes to the kernel ring buffer (readable via dmesg) and supports log levels like KERNINFO, KERNERR, KERN_DEBUG.	
 
 Module Parameters
-Modules can expose tunable variables to user-space at load time using module_param(name, type, perm). When permissions are non-zero, the kernel automatically creates a sysfs entry at /sys/module//parameters/, allowing runtime reads and writes without reloading the module.
+Modules can expose tunable variables to user-space at load time using module_param(name, type, perm). When permissions are non-zero, the kernel automatically creates a sysfs entry at /sys/module//parameters/, allowing runtime reads and writes without reloading the module.	
 
 ## Character Device Drivers
 A character device handles data as a stream of bytes (like a serial port or a sensor). The driver registers a set of callbacks through the file_operations structure:
@@ -43,40 +43,40 @@ struct file_operations {
     long (unlocked_ioctl)(struct file , unsigned int, unsigned long);
 };
 
-Registration is done via registerchrdev() (legacy) or allocchrdevregion() + cdevadd() (modern). Device nodes appear in /dev/ either manually via mknod or automatically through device_create() and udev.
+Registration is done via registerchrdev() (legacy) or allocchrdevregion() + cdevadd() (modern). Device nodes appear in /dev/ either manually via mknod or automatically through device_create() and udev.	
 
 ## User-Kernel Data Transfer
-Kernel code cannot directly dereference user-space pointers. Safe transfer requires:
-copytouser(dst, src, n) — Kernel → User
-copyfromuser(dst, src, n) — User → Kernel
+Kernel code cannot directly dereference user-space pointers. Safe transfer requires:	
+copytouser(dst, src, n) — Kernel → User	
+copyfromuser(dst, src, n) — User → Kernel	
+	
+Both return the number of bytes that failed to copy. Always check the return value.		
 
-Both return the number of bytes that failed to copy. Always check the return value.
+ioctl — Custom Device Commands	
+ioctl provides a channel for device-specific commands that don't fit the read/write model. Commands are encoded using macros like IO, IOR, IOW, IOWR which pack a magic number, command number, and data size into a single unsigned int.	
 
-ioctl — Custom Device Commands
-ioctl provides a channel for device-specific commands that don't fit the read/write model. Commands are encoded using macros like IO, IOR, IOW, IOWR which pack a magic number, command number, and data size into a single unsigned int.
+## Kernel Memory Allocation	
+kmalloc(size, GFP_KERNEL) — Allocates physically contiguous memory. Fast, limited to small sizes.	
+vmalloc(size) — Allocates virtually contiguous memory. Slower, suitable for large buffers.	
+Slab allocator (kmemcachecreate) — Custom caches for frequently allocated same-sized objects.	
 
-## Kernel Memory Allocation
-kmalloc(size, GFP_KERNEL) — Allocates physically contiguous memory. Fast, limited to small sizes.
-vmalloc(size) — Allocates virtually contiguous memory. Slower, suitable for large buffers.
-Slab allocator (kmemcachecreate) — Custom caches for frequently allocated same-sized objects.
+## Concurrency in the Kernel	
+The kernel is heavily concurrent — interrupts, softirqs, multiple processes, and SMP all compete for the same data.	
 
-## Concurrency in the Kernel
-The kernel is heavily concurrent — interrupts, softirqs, multiple processes, and SMP all compete for the same data.
+Mutex — Sleepable lock. Used when the critical section may sleep or take long.	
+Spinlock — Busy-wait lock. Used for very short critical sections, especially in interrupt context where sleeping is forbidden.	
+Atomic operations — Lock-free primitives for simple counters and flags (atomict, atomicinc, atomic_read).	
 
-Mutex — Sleepable lock. Used when the critical section may sleep or take long.
-Spinlock — Busy-wait lock. Used for very short critical sections, especially in interrupt context where sleeping is forbidden.
-Atomic operations — Lock-free primitives for simple counters and flags (atomict, atomicinc, atomic_read).
+## Interrupt Handling	
+Hardware interrupts are handled in two phases:	
+Top-half (request_irq handler) — Runs in interrupt context, must be fast, cannot sleep. Acknowledges the hardware.	
 
-## Interrupt Handling
-Hardware interrupts are handled in two phases:
-Top-half (request_irq handler) — Runs in interrupt context, must be fast, cannot sleep. Acknowledges the hardware.
+## Bottom-half — Defers heavy work to a safer context:	
+  - Tasklets — Run in softirq context, serialized per tasklet.	
+  - Workqueues — Run in process context, can sleep, scheduled on kernel worker threads.	
 
-## Bottom-half — Defers heavy work to a safer context:
-  - Tasklets — Run in softirq context, serialized per tasklet.
-  - Workqueues — Run in process context, can sleep, scheduled on kernel worker threads.
-
-## Platform Drivers & Device Tree
-Modern Linux separates hardware description from driver code. The Device Tree (.dts files) describes hardware topology. Platform drivers bind to devices described in the tree via compatible strings, receiving resources (memory regions, IRQs) through the kernel's resource management APIs.
+## Platform Drivers & Device Tree	
+Modern Linux separates hardware description from driver code. The Device Tree (.dts files) describes hardware topology. Platform drivers bind to devices described in the tree via compatible strings, receiving resources (memory regions, IRQs) through the kernel's resource management APIs.	
 
 # ✅ Progress Tracker
 

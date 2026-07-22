@@ -57,7 +57,6 @@ sudo dmesg | tail -n 3
 
 **Output:**
 ```
-[24348.119952] [EXPORTER] Module unloaded. Symbol removed.
 [24354.566582] [EXPORTER] Loaded. Internal test: 24 - 20 = 4
 [24354.566588] [EXPORTER] Module loaded. Symbol 'perform_calculation' exported.
 ```
@@ -80,7 +79,6 @@ sudo dmesg | tail -n 6
 
 **Output:**
 ```
-[24348.119952] [EXPORTER] Module unloaded. Symbol removed.
 [24354.566582] [EXPORTER] Loaded. Internal test: 24 - 20 = 4
 [24354.566588] [EXPORTER] Module loaded. Symbol 'perform_calculation' exported.
 [24378.736469] [IMPORTER] Module loaded.

@@ -57,7 +57,24 @@ sudo insmod calc_exporter.ko a=24 b=20 op_str="-"
 # Output: [EXPORTER] Loaded. Internal test: 24 - 20 = 4
 ```
 
-**2. Load Importer Second:**
+**What happens:**
+- The exporter module loads with parameters `a=24`, `b=20`, and `op_str="-"`
+- It performs an internal test calculation: `24 - 20 = 4`
+- It exports the symbol `perform_calculation` for other modules to use
+
+**Check kernel logs:**
+```bash
+sudo dmesg | tail -n 3
+```
+
+**Output:**
+```
+[24354.566582] [EXPORTER] Loaded. Internal test: 24 - 20 = 4
+[24354.566588] [EXPORTER] Module loaded. Symbol 'perform_calculation' exported.
+```
+
+### Step 3: Load the Importer Module
+
 ```bash
 sudo insmod calc_importer.ko x=50 y=12 op_str="/"
 # Output: [IMPORTER] Success! Exporter returned: 4
@@ -70,11 +87,11 @@ sudo dmesg | tail -n 6
 
 **Expected Output:**
 ```
-[EXPORTER] Loaded. Internal test: 24 - 20 = 4
-[EXPORTER] Module loaded. Symbol 'perform_calculation' exported.
-[IMPORTER] Module loaded.
-[IMPORTER] Requesting Calculation from Exporter: 50 / 12 = ?
-[IMPORTER] Success! Exporter returned: 4
+[24354.566582] [EXPORTER] Loaded. Internal test: 24 - 20 = 4
+[24354.566588] [EXPORTER] Module loaded. Symbol 'perform_calculation' exported.
+[24378.736469] [IMPORTER] Module loaded.
+[24378.736474] [IMPORTER] Requesting Calculation from Exporter: 50 / 12 = ?
+[24378.736477] [IMPORTER] Success! Exporter returned: 4
 ```
 
 ### Unload Order (Reverse!)

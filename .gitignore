@@ -1,22 +1,3 @@
- [200~# Kernel Module build artifacts
-*.o
-*.ko
-*.ko.unsigned
-*.mod
-*.mod.c
-*.cmd
-*.order
-*.symvers
-*.dwo
-*.dwp
+Nothing should be ignored in this case, as only a README.md file was added without any build artifacts, dependencies, or temporary files.
 
-# Directories
-.tmp_versions/
-modules.builtin
-modules.builtin.modinfo
-Module.symvers
-
-# Editor/OS files
-*.swp
-*~
-.vscode/~
+Output: (empty)
